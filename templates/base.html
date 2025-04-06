@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     handle.innerText = `@${domain}`;
+    const usernameField = document.querySelector('input[name="username"]');
+    if(handle && usernameField) {
+      handle.addEventListener('click', function() {
+        const isFocused = document.activeElement === usernameField;
+        if(!isFocused) {
+          usernameField.focus();
+        }
+      });
+    }
   }
   if (window.location.pathname === '/register/password') {
       const form = document.querySelector('form');
