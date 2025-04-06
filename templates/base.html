@@ -37,16 +37,14 @@ Please see LICENSE in the repository root for full details.
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   if (window.location.pathname === '/register/password') {
-    console.log('Password page loaded');
-  }
-  const form = document.querySelector('form');
-  const passwordField = document.querySelector('input[name="password"]');
-  const confirmPasswordField = document.querySelector('input[name="password_confirm"]');
-  if(form && passwordField && confirmPasswordField) {
-    console.log('Form found, fields found');
-    form.addEventListener('submit', function(event) {
-        confirmPasswordField.value = passwordField.value;
-    });
+      const form = document.querySelector('form');
+      const passwordField = document.querySelector('input[name="password"]');
+      const confirmPasswordField = document.querySelector('input[name="password_confirm"]');
+      if(form && passwordField && confirmPasswordField) {
+        form.addEventListener('submit', function(event) {
+            confirmPasswordField.value = passwordField.value;
+        });
+      }
   }
 })
 </script>
