@@ -1,12 +1,16 @@
 :root {
   --background: hsla(0, 0%, 0%, 1);
   --input-placeholder: var(--cpd-color-gray-1000);
+  --logo-fill: white;
+  --logo-bg: black;
 }
 
 @media screen and (prefers-color-scheme: dark) {
   :root {
     --cpd-color-bg-canvas-default: var(--background);
     --cpd-color-border-focused: var(--cpd-color-gray-900);
+    --logo-fill: black;
+    --logo-bg: white;
   }
 }
 
