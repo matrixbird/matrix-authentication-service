@@ -11,7 +11,7 @@ Please see LICENSE in the repository root for full details.
 {% from "components/idp_brand.html" import logo %}
 
 {% block content %}
-  <form method="POST" class="flex flex-col gap-10">
+
     <header class="page-heading">
       <div class="icon">
         {{ icon.matrixbird() }}
@@ -29,6 +29,8 @@ Please see LICENSE in the repository root for full details.
         </div>
       {% endif %}
     </header>
+
+  <form method="POST" class="cpd-form-root">
 
     <div class="cpd-form-root">
       {% if form.errors is not empty %}
