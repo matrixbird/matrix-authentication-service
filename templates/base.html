@@ -21,8 +21,9 @@ Please see LICENSE in the repository root for full details.
 <html lang="{{ lang }}">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}{{ _("app.name") }}{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://static.matrixbird.com/favicon.png" />
+    <title>Matrixbird</title>
     {{ include_asset('src/shared.css') | indent(4) | safe }}
     {{ include_asset('src/templates.css') | indent(4) | safe }}
     {{ captcha.head() }}
@@ -33,4 +34,20 @@ Please see LICENSE in the repository root for full details.
       {% include "components/footer.html" %}
     </div>
   </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.location.pathname === '/register/password') {
+    console.log('Password page loaded');
+  }
+  const form = document.querySelector('form');
+  const passwordField = document.querySelector('input[name="password"]');
+  const confirmPasswordField = document.querySelector('input[name="password_confirm"]');
+  if(form && passwordField && confirmPasswordField) {
+    console.log('Form found, fields found');
+    form.addEventListener('submit', function(event) {
+        confirmPasswordField.value = passwordField.value;
+    });
+  }
+})
+</script>
 </html>
