@@ -1,0 +1,36 @@
+:root {
+  --background: hsla(0, 0%, 0%, 1);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --cpd-color-bg-canvas-default: var(--background);
+    --cpd-color-border-focused: var(--cpd-color-gray-900);
+  }
+}
+
+.cpd-text-control {
+  border-radius: 0.25rem;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+  background-color: transparent !important;
+}
+
+.page-heading {
+  & .icon {
+    background-color: transparent;
+    & svg {
+      height: var(--cpd-space-16x);
+      width: var(--cpd-space-16x);
+      color: var(--cpd-color-icon-secondary);
+    }
+  }
+
+}
+
+
