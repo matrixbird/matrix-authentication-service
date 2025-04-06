@@ -36,6 +36,17 @@ Please see LICENSE in the repository root for full details.
   </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  const handle = document.querySelector('.handle');
+  if(handle) {
+    const hostname = window.location.host; 
+    let domain = hostname;
+    if (hostname.split('.').length > 2) {
+      const parts = hostname.split('.');
+      domain = parts.slice(-2).join('.');
+    }
+
+    handle.innerText = `@${domain}`;
+  }
   if (window.location.pathname === '/register/password') {
       const form = document.querySelector('form');
       const passwordField = document.querySelector('input[name="password"]');

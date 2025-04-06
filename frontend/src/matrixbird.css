@@ -1,5 +1,6 @@
 :root {
   --background: hsla(0, 0%, 0%, 1);
+  --input-placeholder: var(--cpd-color-gray-1000);
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -11,6 +12,10 @@
 
 .cpd-text-control {
   border-radius: 0.25rem;
+}
+
+input::placeholder {
+  color: var(--input-placeholder);
 }
 
 input:-webkit-autofill,
@@ -34,3 +39,12 @@ input[data-autocompleted] {
 }
 
 
+.handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
