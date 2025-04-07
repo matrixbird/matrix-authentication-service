@@ -1,0 +1,117 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - matrixbird
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-assets:
+    name: Build assets
+    if: github.event_name == 'push' 
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4.2.2
+
+      - uses: ./.github/actions/build-frontend
+      - uses: ./.github/actions/build-policies
+
+      - name: Prepare assets artifact
+        run: |
+          mkdir -p assets-dist/share
+          cp policies/policy.wasm assets-dist/share/policy.wasm
+          cp frontend/dist/manifest.json assets-dist/share/manifest.json
+          cp -r frontend/dist/ assets-dist/share/assets
+          cp -r templates/ assets-dist/share/templates
+          cp -r translations/ assets-dist/share/translations
+          chmod -R u=rwX,go=rX assets-dist/
+
+      - name: Upload assets
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: assets
+          path: assets-dist
+
+  fetch-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download and extract mas-cli
+        run: |
+          curl -L https://github.com/element-hq/matrix-authentication-service/releases/download/unstable/mas-cli-aarch64-linux.tar.gz -o mas-cli.tar.gz
+          mkdir mas-cli-bin
+          tar -xzf mas-cli.tar.gz -C mas-cli-bin
+
+      - name: Upload mas-cli binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: mas-cli
+          path: mas-cli-bin/mas-cli
+
+  assemble-archives:
+    name: Package files
+    if: github.event_name == 'push' 
+    runs-on: ubuntu-24.04
+
+    needs:
+      - build-assets
+      - fetch-release
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Download assets
+        uses: actions/download-artifact@v4
+        with:
+          name: assets
+          path: assets-dist
+
+      - name: Download binary aarch64
+        uses: actions/download-artifact@v4
+        with:
+          name: mas-cli
+          path: .
+
+      - name: Make binary executable
+        run: |
+          chmod +x ./mas-cli
+
+      - name: Create final archives
+        run: |
+          for arch in aarch64; do
+            mkdir -p dist/${arch}/share
+            cp -r assets-dist/share/* dist/${arch}/share/
+            cp mas-cli dist/${arch}/mas-cli
+            chmod -R u=rwX,go=rX dist/${arch}/
+            chmod u=rwx,go=rx dist/${arch}/mas-cli
+            tar -czvf mas-cli-${arch}-linux.tar.gz --owner=0 --group=0 -C dist/${arch}/ .
+          done
+
+      - name: Upload aarch64 archive
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: mas-cli-aarch64-linux
+          path: mas-cli-aarch64-linux.tar.gz
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.VPS_HOST_DEV }}" >> ~/.ssh/known_hosts
+
+      - name: Upload binary 
+        run: |
+          rsync -avz --progress mas-cli-aarch64-linux.tar.gz ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/${{ secrets.VPS_USER }}/mas/
+          rsync -avz --progress mas-cli-aarch64-linux.tar.gz ${{ secrets.VPS_USER_DEV }}@${{ secrets.VPS_HOST_DEV }}:/home/${{ secrets.VPS_USER_DEV }}/mas/
+
