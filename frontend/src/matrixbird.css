@@ -42,13 +42,19 @@ input[data-autocompleted] {
 
 }
 
+.hide-label {
+  & .cpd-form-label {
+    display: none;
+  }
+}
+
 
 .handle {
   pointer-events: none;
   position: absolute;
   top: 0;
   right: 0;
-  height: 100%;
+  height: 3.125rem;
   display: flex;
   justify-content: center;
   align-items: center;
