@@ -329,7 +329,7 @@
       "@captcha": {
         "context": "components/errors.html:19:7-30"
       },
-      "denied_policy": "Denied by policy: %(policy)s",
+      "denied_policy": "%(policy)s",
       "@denied_policy": {
         "context": "components/errors.html:17:7-58, components/field.html:85:19-70"
       },
