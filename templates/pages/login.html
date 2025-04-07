@@ -59,7 +59,9 @@ Please see LICENSE in the repository root for full details.
 
     <div class="cpd-form-root">
       {% if features.password_login %}
+        <div class="mt-4 grid">
         {{ button.button(text=_("action.continue")) }}
+        </div>
       {% endif %}
 
       {% if features.password_login and providers %}
