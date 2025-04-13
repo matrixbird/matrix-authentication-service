@@ -23,7 +23,7 @@ use mas_storage::RepositoryAccess;
 use mas_storage_pg::PgRepository;
 use mas_templates::{SiteConfigExt, TemplateLoadingError, Templates};
 use sqlx::{
-    ConnectOptions, PgConnection, PgPool,
+    ConnectOptions, Executor, PgConnection, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions},
 };
 use tokio_util::{sync::CancellationToken, task::TaskTracker};
@@ -214,6 +214,7 @@ pub fn site_config_from_config(
         captcha,
         minimum_password_complexity: password_config.minimum_complexity(),
         session_expiration,
+        login_with_email_allowed: account_config.login_with_email_allowed,
     })
 }
 
@@ -339,6 +340,15 @@ pub async fn database_pool_from_config(config: &DatabaseConfig) -> Result<PgPool
         .acquire_timeout(config.connect_timeout)
         .idle_timeout(config.idle_timeout)
         .max_lifetime(config.max_lifetime)
+        .after_connect(|conn, _meta| {
+            Box::pin(async move {
+                // Unlisten from all channels, as we might be connected via a connection pooler
+                // that doesn't clean up LISTEN/NOTIFY state when reusing connections.
+                conn.execute("UNLISTEN *;").await?;
+
+                Ok(())
+            })
+        })
         .connect_with(options)
         .await
         .context("could not connect to the database")

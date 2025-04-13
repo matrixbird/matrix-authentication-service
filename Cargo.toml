@@ -274,11 +274,11 @@ features = ["http2", "rustls-tls-manual-roots", "charset", "json", "socks"]
 
 # Matrix-related types
 [workspace.dependencies.ruma-common]
-version = "0.15.1"
+version = "0.15.2"
 
 # TLS stack
 [workspace.dependencies.rustls]
-version = "0.23.25"
+version = "0.23.26"
 
 # Use platform-specific verifier for TLS
 [workspace.dependencies.rustls-platform-verifier]
@@ -403,7 +403,7 @@ default-features = false
 features = ["trace", "metrics", "http-proto"]
 
 [workspace.dependencies.opentelemetry-prometheus]
-version = "0.29.0"
+version = "0.29.1"
 
 [workspace.dependencies.opentelemetry-resource-detectors]
 version = "0.8.0"
@@ -429,7 +429,7 @@ version = "0.30.0"
 default-features = false
 
 [workspace.dependencies.prometheus]
-version = "0.13.4"
+version = "0.14.0"
 
 # URL manipulation
 [workspace.dependencies.url]
